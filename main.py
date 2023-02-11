@@ -9,9 +9,10 @@ with open("phonebook_raw.csv", "r", encoding="utf-8") as f:
   contacts_list.sort()
 
 phonebook = []
-pattern = "(\+7|8)\s*?\(*([\d]{3})\)*[-\s]*([\d]{3})[-]*([\d]{2})[-]*([\d]{2})"
 check = []
 count = 0
+re_exp = r'(\+7|8)?\s*?\(?(\d{3})\)?[\s*-]?(\d{3})[\s*-]?(\d{2})[\s*-]?(\d{2})[\s,]?\(?(доб.)?\s?(\d{4})?\)?'
+
 for i in contacts_list:
   contact = []
   str_fio = ' '.join(i)
@@ -25,6 +26,9 @@ for i in contacts_list:
   contact.append(info[4])
   contact.append(info[5])
   contact.append(info[6])
+  sub = r'+7(\2)\3-\4-\5 \6\7'
+  contact[5] = re.sub(re_exp, sub, contact[5])
+  # print(contact[5])
   if count > 0:
     if contact[0] == check[0] and contact[1] == check[1]:
       # print(check)
@@ -57,46 +61,6 @@ for i in contacts_list:
 
 pprint(phonebook)
 
-
-
-
-# for key, group in groupby(phonebook, lambda lastname: lastname[0]):
-#   print(key)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#
-# # TODO 2: сохраните получившиеся данные в другой файл
-# # код для записи файла в формате CSV
-# with open("phonebook.csv", "w") as f:
-#   datawriter = csv.writer(f, delimiter=',')
-#   # Вместо contacts_list подставьте свой список
-#   datawriter.writerows(contacts_list)
+with open("phonebook.csv", "w") as f:
+  datawriter = csv.writer(f, delimiter=',')
+  datawriter.writerows(phonebook)
